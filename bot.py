@@ -65,12 +65,16 @@ async def run_bot(transport: BaseTransport, runner_args: RunnerArguments):
         voice_id="71a7ad14-091c-4e8e-a314-022ece01c121",  # British Reading Lady
     )
 
-    llm = GoogleLLMService(api_key=os.getenv("GEMINI_API_KEY"), model="gemini-2.5-flash")
+    llm = GoogleLLMService(
+        api_key=os.getenv("GEMINI_API_KEY"),
+        model="gemini-2.5-flash",
+        tools=[{"google_search": {}}]
+    )
 
     messages = [
         {
             "role": "system",
-            "content": "You are a friendly AI assistant. Respond naturally and keep your answers conversational.",
+            "content": "You are a friendly AI assistant. Respond naturally and keep your answers conversational. If the user asks about real-time information, current events, or things you don't know, use the google_search tool to find the answer.",
         },
     ]
 
@@ -121,10 +125,6 @@ async def bot(runner_args: RunnerArguments):
     """Main bot entry point for the bot starter."""
 
     transport_params = {
-        "daily": lambda: DailyParams(
-            audio_in_enabled=True,
-            audio_out_enabled=True,
-        ),
         "webrtc": lambda: TransportParams(
             audio_in_enabled=True,
             audio_out_enabled=True,
@@ -138,5 +138,9 @@ async def bot(runner_args: RunnerArguments):
 
 if __name__ == "__main__":
     from pipecat.runner.run import main
-
+    import sys
+    
+    if "-t" not in sys.argv and "--transport" not in sys.argv:
+        sys.argv.extend(["-t", "webrtc"])
+        
     main()
