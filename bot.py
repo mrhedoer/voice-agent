@@ -121,10 +121,6 @@ async def bot(runner_args: RunnerArguments):
     """Main bot entry point for the bot starter."""
 
     transport_params = {
-        "daily": lambda: DailyParams(
-            audio_in_enabled=True,
-            audio_out_enabled=True,
-        ),
         "webrtc": lambda: TransportParams(
             audio_in_enabled=True,
             audio_out_enabled=True,
@@ -138,5 +134,9 @@ async def bot(runner_args: RunnerArguments):
 
 if __name__ == "__main__":
     from pipecat.runner.run import main
-
+    import sys
+    
+    if "-t" not in sys.argv and "--transport" not in sys.argv:
+        sys.argv.extend(["-t", "webrtc"])
+        
     main()

@@ -1,173 +1,78 @@
-# Pipecat Quickstart
+# 🎙️ Pipecat Voice Chat Agent
 
-Build and deploy your first voice AI bot in under 10 minutes. Develop locally, then scale to production on Pipecat Cloud.
+<div align="center">
+  <img src="./image.png" alt="Pipecat Voice Chat Agent UI Preview" width="100%" />
+</div>
 
-**Two steps**: [🏠 Local Development](#run-your-bot-locally) → [☁️ Production Deployment](#deploy-to-production)
+A modern, real-time voice AI assistant built with **Pipecat**, **React**, and **WebRTC**. Experience ultra-low latency conversational AI with a beautiful, dynamic anime-style avatar interface.
 
-## Step 1: Local Development (5 min)
+## ✨ Features
 
-### Prerequisites
+- **🗣️ Real-time Voice Interaction:** Talk naturally with the AI using your microphone.
+- **⚡ Ultra-low Latency WebRTC:** Smooth, uninterrupted communication powered by the `@pipecat-ai/small-webrtc-transport` package.
+- **🎨 Modern React UI:** Beautiful, responsive interface built with Vite, Tailwind CSS, and Radix UI components. 
+- **📜 Live Chat Transcription:** Scrollable conversation history so you never miss a word.
+- **⚙️ Complete Device Controls:** Easily toggle your microphone, camera, and audio output directly from the side panel.
+- **💃 Dynamic Avatar Presentation:** Engaging character display providing an immersive conversational experience.
+- **🧠 Powerful AI Stack:** Fully integrated with Google Gemini (LLM), Deepgram Speech-to-Text (STT), and Cartesia Text-to-Speech (TTS).
 
-#### Environment
+---
 
-- Python 3.10 or later
-- [uv](https://docs.astral.sh/uv/getting-started/installation/) package manager installed
+## 🚀 Quickstart
 
-#### AI Service API keys
+Get your bot running locally in just a few minutes!
 
-You'll need API keys from three services:
+### 1. Prerequisites
 
-- [Deepgram](https://console.deepgram.com/signup) for Speech-to-Text
-- [OpenAI](https://auth.openai.com/create-account) for LLM inference
-- [Cartesia](https://play.cartesia.ai/sign-up) for Text-to-Speech
+- **Python 3.10+**
+- **[uv](https://docs.astral.sh/uv/getting-started/installation/)** package manager
+- **Node.js & npm** (for the frontend application)
+- **API Keys** for Deepgram, Google Gemini, and Cartesia
 
-> 💡 **Tip**: Sign up for all three now. You'll need them for both local and cloud deployment.
+### 2. Backend Setup
 
-### Setup
-
-Navigate to the quickstart directory and set up your environment.
-
-1. Clone this repository
-
-   ```bash
-   git clone https://github.com/pipecat-ai/pipecat-quickstart.git
-   cd pipecat-quickstart
-   ```
-
-2. Configure your API keys:
-
-   Create a `.env` file:
-
-   ```bash
-   cp env.example .env
-   ```
-
-   Then, add your API keys:
-
-   ```ini
-   DEEPGRAM_API_KEY=your_deepgram_api_key
-   OPENAI_API_KEY=your_openai_api_key
-   CARTESIA_API_KEY=your_cartesia_api_key
-   ```
-
-3. Set up a virtual environment and install dependencies
-
-   ```bash
-   uv sync
-   ```
-
-### Run your bot locally
+Clone the repository and set up your Python environment:
 
 ```bash
+git clone https://github.com/mrhedoer/voice-agent.git
+cd voice-agent
+
+# Configure your API keys
+cp env.example .env
+# Edit .env and add DEEPGRAM_API_KEY, GEMINI_API_KEY, CARTESIA_API_KEY
+
+# Install dependencies and start the backend
+uv sync
 uv run bot.py
 ```
 
-**Open http://localhost:7860 in your browser** and click `Connect` to start talking to your bot.
+> 💡 **Tip:** The first run may take ~20 seconds as Pipecat downloads required models and imports.
 
-> 💡 First run note: The initial startup may take ~20 seconds as Pipecat downloads required models and imports.
+### 3. Frontend Setup
 
-🎉 **Success!** Your bot is running locally. Now let's deploy it to production so others can use it.
+In a new terminal window, navigate to the `frontend` directory:
+
+```bash
+cd frontend
+
+# Install dependencies
+npm install
+
+# Start the development server
+npm run dev
+```
+
+Your React application will now be running on `http://localhost:5173`. Open your browser, click **Connect** in the side panel, and start talking to your bot!
 
 ---
 
-## Step 2: Deploy to Production (5 min)
+## 🛠️ Tech Stack
 
-Transform your local bot into a production-ready service. Pipecat Cloud handles scaling, monitoring, and global deployment.
-
-### Prerequisites
-
-1. [Sign up for Pipecat Cloud](https://pipecat.daily.co/sign-up).
-
-2. Set up Docker for building your bot image:
-
-   - **Install [Docker](https://www.docker.com/)** on your system
-   - **Create a [Docker Hub](https://hub.docker.com/) account**
-   - **Login to Docker Hub:**
-
-     ```bash
-     docker login
-     ```
-
-3. Install the Pipecat CLI
-
-   ```bash
-   uv tool install pipecat-ai-cli
-   ```
-
-   > Tip: You can run the `pipecat` CLI using the `pc` alias.
-
-### Configure your deployment
-
-The `pcc-deploy.toml` file tells Pipecat Cloud how to run your bot. **Update the image field** with your Docker Hub username by editing `pcc-deploy.toml`.
-
-```ini
-agent_name = "quickstart"
-image = "YOUR_DOCKERHUB_USERNAME/quickstart:0.1"  # 👈 Update this line
-secret_set = "quickstart-secrets"
-
-[scaling]
-	min_agents = 1
-```
-
-**Understanding the TOML file settings:**
-
-- `agent_name`: Your bot's name in Pipecat Cloud
-- `image`: The Docker image to deploy (format: `username/image:version`)
-- `secret_set`: Where your API keys are stored securely
-- `min_agents`: Number of bot instances to keep ready (1 = instant start)
-
-> 💡 Tip: [Set up `image_credentials`](https://docs.pipecat.ai/deployment/pipecat-cloud/fundamentals/secrets#image-pull-secrets) in your TOML file for authenticated image pulls
-
-### Log in to Pipecat Cloud
-
-To start using the CLI, authenticate to Pipecat Cloud:
-
-```bash
-pipecat cloud auth login
-```
-
-You'll be presented with a link that you can click to authenticate your client.
-
-### Configure secrets
-
-Upload your API keys to Pipecat Cloud's secure storage:
-
-```bash
-pipecat cloud secrets set quickstart-secrets --file .env
-```
-
-This creates a secret set called `quickstart-secrets` (matching your TOML file) and uploads all your API keys from `.env`.
-
-### Build and deploy
-
-Build your Docker image and push to Docker Hub:
-
-```bash
-pipecat cloud docker build-push
-```
-
-Deploy to Pipecat Cloud:
-
-```bash
-pipecat cloud deploy
-```
-
-### Connect to your agent
-
-1. Open your [Pipecat Cloud dashboard](https://pipecat.daily.co/)
-2. Select your `quickstart` agent → **Sandbox**
-3. Allow microphone access and click **Connect**
+- **Backend:** Python, Pipecat framework, uv
+- **Frontend:** React 18, Vite, TypeScript
+- **Styling & UI:** Tailwind CSS, Radix UI Primitives, Framer Motion
+- **AI Services:** Gemini 2.5 Flash (LLM), Deepgram (STT), Cartesia (TTS)
+- **Transport Layer:** WebRTC
 
 ---
-
-## What's Next?
-
-**🔧 Customize your bot**: Modify `bot.py` to change personality, add functions, or integrate with your data  
-**📚 Learn more**: Check out [Pipecat's docs](https://docs.pipecat.ai/) for advanced features  
-**💬 Get help**: Join [Pipecat's Discord](https://discord.gg/pipecat) to connect with the community
-
-### Troubleshooting
-
-- **Browser permissions**: Allow microphone access when prompted
-- **Connection issues**: Try a different browser or check VPN/firewall settings
-- **Audio issues**: Verify microphone and speakers are working and not muted
+*Built with ❤️ using [Pipecat](https://pipecat.ai/)*
